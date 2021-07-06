@@ -1,0 +1,17 @@
+[package]
+name = "signfindrust"
+version = "0.1.0"
+authors = ["ThaCheeseBun"]
+edition = "2018"
+readme = "https://github.com/thacheesebun/signfindrust/blob/master/README.md"
+homepage = "https://github.com/thacheesebun/signfindrust/"
+repository = "https://github.com/thacheesebun/signfindrust/"
+license = "ISC"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+byteorder = "1"
+fastnbt = "1"
+flate2 = { version = "1", features = ["zlib-ng-compat"], default-features = false }
+serde = "1"
