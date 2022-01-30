@@ -21,7 +21,7 @@ use fastnbt::error::Result;
 #[derive(Deserialize)]
 #[serde(rename_all = "PascalCase")]
 struct Chunk<'a> {
-    data_version: i32,
+    data_version: Option<i32>,
 
     #[serde(borrow)]
     level: Option<Level<'a>>,
@@ -61,7 +61,13 @@ fn format_sign_text(t: &str) -> &str {
     let d: Vec<_> = t.split('"').collect();
     match t.contains("extra") {
         true => d[5],
-        false => d[3]
+        false => {
+            if d.len() > 1 {
+                d[3]
+            } else {
+                d[0]
+            }
+        }
     }
 }
 
@@ -113,7 +119,8 @@ fn main() {
                     Ok(chunk) => {
                         // version 21w43a and upwards changes shit
                         let signs =
-                            if chunk.data_version >= 2844 {
+                            if chunk.data_version != None &&
+                               chunk.data_version.unwrap() >= 2844 {
                                 chunk.block_entities.unwrap()
                             } else {
                                 chunk.level.unwrap().tile_entities
