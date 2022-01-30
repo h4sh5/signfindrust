@@ -1,8 +1,8 @@
 [package]
 name = "signfindrust"
-version = "0.1.0"
+version = "0.0.1"
 authors = ["ThaCheeseBun"]
-edition = "2018"
+edition = "2021"
 readme = "https://github.com/thacheesebun/signfindrust/blob/master/README.md"
 homepage = "https://github.com/thacheesebun/signfindrust/"
 repository = "https://github.com/thacheesebun/signfindrust/"
