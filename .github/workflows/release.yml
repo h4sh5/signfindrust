@@ -1,19 +1,34 @@
-
-
 name: release
-
 on:
-  release:
-    types: [created]
-  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch: # this is a nice option that will enable a button w/ inputs
     inputs:
       git-ref:
         description: Git Ref (Optional)    
         required: false
-
 jobs:
   release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@master
+      - name: Create Release
+        uses: actions/create-release@latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v-gh-multi-${{ github.ref }}
+          release_name: ${{ github.ref }}
+          draft: false
+          prerelease: false
+
+  publish:
     name: publish ${{ matrix.name }}
+    needs:
+      - release
     strategy:
       fail-fast: true
       matrix:
@@ -23,7 +38,7 @@ jobs:
             archive: zip
           - target: x86_64-unknown-linux-gnu
             suffix: linux-x86_64
-            archive: tar.xz
+            archive: tar.gz
           - target: x86_64-apple-darwin
             suffix: darwin-x86_64
             archive: tar.gz
@@ -31,12 +46,12 @@ jobs:
     steps:
       - name: Clone test repository
         uses: actions/checkout@v2
-      - uses: xhaiker/rust-release.action@v1.0.0
+      - uses: h4sh5/rust-release.action@latest
         name: build ${{ matrix.name }}
         with:
+          release: ${{ github.ref_name }}
           rust_target: ${{ matrix.target }}
           archive_suffix: ${{ matrix.suffix }}
           archive_types: ${{ matrix.archive }}
-          extra_files: "README.md"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
